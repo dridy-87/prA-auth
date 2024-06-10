@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "spring.session.store-type",
-  "type": "java.lang.String",
-  "description": "A description for 'spring.session.store-type'"
-}]}
+{"properties": [
+  {
+    "name": "spring.session.store-type",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.session.store-type'"
+  },
+  {
+    "name": "spring.data.redis.host",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.data.redis.host'"
+  },
+  {
+    "name": "spring.data.redis.port",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.data.redis.port'"
+  }
+]}
