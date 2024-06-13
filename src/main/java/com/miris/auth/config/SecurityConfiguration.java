@@ -22,35 +22,55 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import com.miris.auth.filter.CustomAuthenticationFilter;
-import com.miris.auth.service.UserDetailsServiceImpl;
+import com.miris.auth.service.PrincipalDetailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * @FileName : SecurityConfiguration.java
 
+ * @작성자 : yg87.kim
+
+ * @작성일 : 2024. 06. 13
+
+ * @프로그램 설명 : Spring Security 필터 등록 및 cors 등 
+
+ * @변경이력 :
+ */
 @Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
-	private final UserDetailsServiceImpl userDetailsService;
+	private final PrincipalDetailService userDetails;
 	private final RedisTemplate<String, Object> redisTemplate;
 	
-	@Bean
-	public BCryptPasswordEncoder encoder() {
-	    return new BCryptPasswordEncoder();
-	}
-	// cors 설정
+	
+	/**
+	 * 
+	 * @Method Name : corsConfigurationSource
+	
+	 * @작성자 : yg87.kim
+	
+	 * @작성일 : 2024. 06. 13
+	
+	 * @프로그램 설명 : cors 설정 및 등
+	
+	 * @변경이력 :
+	 */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -68,7 +88,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         customAuthenticationFilter.setUsernameParameter("username");
         customAuthenticationFilter.setPasswordParameter("password");
         
-        //로그
+        //cors 설정 등록
+        http.cors().configurationSource(corsConfigurationSource());
+        
+        //로그인
     	http
         .csrf().disable()
         .authorizeRequests()
@@ -77,7 +100,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         .anyRequest()
         .permitAll();
     	
-    	//로그 아
+    	//로그 아웃
         http.logout()
         .logoutUrl("/api/logout")
         .logoutSuccessHandler(new LogoutSuccessHandler() {
@@ -90,18 +113,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 				log.info("requesParam: " + request.getParameter("username"));
 			}
 		})
-        .logoutSuccessUrl("/")
+        .logoutSuccessUrl("/logout")
         .invalidateHttpSession(true)
         .deleteCookies("JSESSIONID");
 
     	http.addFilter(customAuthenticationFilter);
-    	http.userDetailsService(userDetailsService);
+    	http.userDetailsService(userDetails);
     	
     }
     
+    @Bean
+	public BCryptPasswordEncoder encoder() {
+	    return new BCryptPasswordEncoder();
+	}
+    
 	@Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-    	auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
+    	auth.userDetailsService(userDetails).passwordEncoder(encoder());
     }
 
 }

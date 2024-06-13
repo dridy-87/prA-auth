@@ -33,10 +33,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	    String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        log.info("username: " + username);
-        log.info("password: " + password);
-        
-  
+
 
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
 
@@ -48,13 +45,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-    	//레디스 세션 시간 60
-//    	request.getSession().setMaxInactiveInterval(600); //600초
     	
-
     	HashMap<String, Object> responseInfo = new HashMap<String, Object>(
         );
     	HttpSession session = request.getSession();
+ 
     	responseInfo.put("principal", authResult.getPrincipal());
     	responseInfo.put("session", session.getId());
     	responseInfo.put("expiredTime", session.getMaxInactiveInterval());

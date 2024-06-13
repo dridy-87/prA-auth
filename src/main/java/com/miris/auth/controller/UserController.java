@@ -10,17 +10,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.miris.auth.model.User;
-import com.miris.auth.service.UserService;
+import com.miris.auth.service.UserServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * @FileName : UserController.java
+
+ * @작성자 : yg87.kim
+
+ * @작성일 : 2024. 06. 13
+
+ * @프로그램 설명 : 
+
+ * @변경이력 :
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 	
 	@Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 	
 	@GetMapping
     public List<User> getAllUsers() {

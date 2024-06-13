@@ -9,20 +9,32 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+
+
+/**
+ * 
+ * @FileName : UserDetailsServiceImpl.java
+
+ * @작성자 : yg87.kim
+
+ * @작성일 : 2024. 06. 13
+
+ * @프로그램 설명 : Spring Security 사용자 검증
+
+ * @변경이력 :
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class PrincipalDetailService implements UserDetailsService {
 	
-	private final UserService userService;
+	private final UserServiceImpl userDetailsServiceImpl;
 	
 	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Load user from database or any other source
-        // Here, we are using a hardcoded user for demonstration purposes
-        log.info("loadUserByUsername: " + username);
+
         
-        com.miris.auth.model.User user = userService.getUser(username);
+        com.miris.auth.model.User user = userDetailsServiceImpl.getUser(username);
         
         
         
