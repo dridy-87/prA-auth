@@ -18,10 +18,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.CorsFilter;
 
 import com.miris.auth.filter.CustomAuthenticationFilter;
@@ -80,13 +82,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-    	
+    	    
     	//UsernamePasswordAuthenticationFilter 커스
     	CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager(),redisTemplate);
         
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         customAuthenticationFilter.setUsernameParameter("username");
         customAuthenticationFilter.setPasswordParameter("password");
+        
         
         //cors 설정 등록
         http.cors().configurationSource(corsConfigurationSource());

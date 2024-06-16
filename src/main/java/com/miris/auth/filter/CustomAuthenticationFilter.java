@@ -2,6 +2,8 @@ package com.miris.auth.filter;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miris.auth.dto.ResultDto;
+import com.miris.auth.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +54,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         );
     	HttpSession session = request.getSession();
  
-    	responseInfo.put("principal", authResult.getPrincipal());
+    	responseInfo.put("userInfo", authResult.getPrincipal());
     	responseInfo.put("session", session.getId());
     	responseInfo.put("expiredTime", session.getMaxInactiveInterval());
     	
@@ -58,19 +62,20 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     	log.info("getMaxInactiveInterval :" +  session.getMaxInactiveInterval());
     	log.info("getLastAccessedTime :" +  session.getLastAccessedTime());
     	log.info("getCreationTime :" +  session.getCreationTime());
-    	
-    	
-    	
+    
+
         new ObjectMapper().writeValue(
-                response.getOutputStream(), responseInfo);
+                 response.getOutputStream(), ResultDto.createSuccessResult(responseInfo));
+    	
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType("application/json");
-        response.getWriter().write("{\"message\":\"Login Failed\"}");
-        response.getWriter().flush();
+        response.addHeader("Content-Type", "application/json; charset=UTF-8");
+        
+    	new ObjectMapper().writeValue(
+                response.getOutputStream(), ResultDto.createErrorResult(ErrorCode.ACCOUNT_NOT_FOUND.getMessage()));
     }
 
 }

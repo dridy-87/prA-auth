@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.miris.auth.model.Member;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,23 +31,23 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PrincipalDetailService implements UserDetailsService {
 	
-	private final UserServiceImpl userDetailsServiceImpl;
+	private final MemberServiceImpl userDetailsServiceImpl;
 	
 	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         
-        com.miris.auth.model.User user = userDetailsServiceImpl.getUser(username);
+        Member member = userDetailsServiceImpl.getUser(username);
         
         
         
-        if(user == null) {
+        if(member == null) {
         	 throw new UsernameNotFoundException("User not found");
         }
         return User.builder()
-        		.username(user.getUsername())
-        		.password(new BCryptPasswordEncoder().encode(user.getPassword()))
-        		.roles(user.getRole())
+        		.username(member.getUsername())
+        		.password(new BCryptPasswordEncoder().encode(member.getPassword()))
+        		.roles(member.getRole())
         		.build();
         		
     }

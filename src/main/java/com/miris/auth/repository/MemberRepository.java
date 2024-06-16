@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.miris.auth.model.User;
+import com.miris.auth.model.Member;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Integer> {
 	
-	@Query("select m from User m where m.username = :username")
-	User findByName(@Param("username") String username);
+	@Query("select m from Member m where m.username = :username")
+	Member findByName(@Param("username") String username);
 }

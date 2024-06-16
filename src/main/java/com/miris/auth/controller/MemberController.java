@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.miris.auth.model.User;
-import com.miris.auth.service.UserServiceImpl;
+import com.miris.auth.model.Member;
+import com.miris.auth.service.MemberServiceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
- * @FileName : UserController.java
+ * @FileName : MemberController.java
 
  * @작성자 : yg87.kim
 
@@ -29,23 +29,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class MemberController {
 	
 	@Autowired
-    private UserServiceImpl userService;
+    private MemberServiceImpl memberServiceImpl;
 	
 	@GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<Member> getAllUsers() {
+        return memberServiceImpl.getAllUsers();
     }
 	
 	@GetMapping("/user")
-    public User getAllUser(String username) {
-        return userService.getUser(username);
+    public Member getAllUser(String username) {
+        return memberServiceImpl.getUser(username);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public Member createUser(@RequestBody Member member) {
+        return memberServiceImpl.saveUser(member);
     }
 }
